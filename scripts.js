@@ -1,13 +1,6 @@
 "use strict";
 
 // ---------------------------------------------------------
-// TO DO: Start in the HTML file head, we need to link to the 
-// resources we need to get the jQuery and Spectrum Color 
-// picker plugin working
-// ---------------------------------------------------------
-
-
-// ---------------------------------------------------------
 // JQUERY UI
 // ---------------------------------------------------------
 // page load function - can use this with async
@@ -44,14 +37,25 @@ $(function(){
 			- Move Event: http://bgrins.github.io/spectrum/#events-move
 				- on the move event, update the value of our "--svg" CSS variable on the root element to the selected color
 	*/
-	// TO DO: add the color picker with the settings/features listed above
+	$("#flat").spectrum({
+		preferredFormat: "hex3",
+		flat: true,
+		showInput: true,
+		color: "#F63077", 
+		showButtons: false,
+		move: (color) => {
+			let root = document.documentElement;
+			let newColor = color.toHexString();
+			root.style.setProperty("--svg", newColor);
+		}
+	});
 
 	// when the color picker is created, the input is added to allow 
 	// the user to type a color in that they want to see
 	// this element isn't given a name or id, which is an accessibility 
 	// issue, so I am going to add one myself to fix that issue
 	// the input the plugin adds has a class of "sp-input"
-	// $("input.sp-input").attr("id", "color-input"); // TO DO: uncomment once the color picker is added to the page
+	$("input.sp-input").attr("id", "color-input");
 
 	// ---------------------------------------------------------
 	// Accordion Widget
@@ -91,7 +95,14 @@ $(function(){
 				- the activeHeader icon should use the "ui-icon-caret-1-s"
 				- the header icon should use the "ui-icon-caret-1-e"
 	*/
-	// TO DO: add the accordion to the page with the settings/features listed above
+	$("#accordion").accordion({
+		collapsible: true,
+		active: false,
+		icons: {
+			header: "ui-icon-caret-1-e",
+			activeHeader: "ui-icon-caret-1-s"
+		}
+	});
 
 	// ---------------------------------------------------------
 	// Color Effects in jQuery UI
@@ -116,7 +127,32 @@ $(function(){
 				- mouse enter: #d71db4
 				- mouse leave: #36d0b8
 	*/
-	// TO DO: Add the color animation to the SVG when a user hovers over it as described above
+	$("#animations svg").on({
+		mouseenter: () => {
+			jQuery.Color.hook("fill");
+			$("#path1").animate({
+				fill: "#87D036"
+			}, "slow");
+			$("#path2").animate({
+				fill: "#EA842F"
+			}, "slow");
+			$("#path3").animate({
+				fill: "#D71DB4"
+			}, "slow");
+		},
+		mouseleave: () => {
+			jQuery.Color.hook("fill");
+			$("#path1").animate({
+				fill: "#EF131F"
+			}, "slow");
+			$("#path2").animate({
+				fill: "#5136D0"
+			}, "slow");
+			$("#path3").animate({
+				fill: "#36D0B8"
+			}, "slow");
+		}
+	});
 
 	// ---------------------------------------------------------
 	// Animation Between Classes in jQuery UI
@@ -131,7 +167,10 @@ $(function(){
 				- switch from the style1 class to the style2 class over 4000ms
 				- switch back over the same time frame
 	*/
-	// TO DO: add an animation from one class to another and back again on button click as described above
+	$("#switchClass button").on("click", () => {
+		$("#switchClass p").switchClass("style1", "style2", 4000);
+		$("#switchClass p").switchClass("style2", "style1", 4000);
+	});
 
 	// ---------------------------------------------------------
 	// Tabs Widget
@@ -142,7 +181,7 @@ $(function(){
 		--- FOR OUR VERSION ---
 			- Default tabs
 	*/
-	// TO DO: add the tabs to the page with the settings/features listed above
+	$(".tabs").tabs();
 
 	// ---------------------------------------------------------
 	// Datepicker Widget
@@ -159,7 +198,14 @@ $(function(){
 			- on the change event:
 				- Display the value the user selected in the paragraph in this section after the text "<strong>You Have Selected:</strong> "
 	*/
-	// TO DO: add the datepicker to the page with the settings/features listed above;
+	$("#datepicker").datepicker({
+		dateFormat: "DD, MM, d, yy",
+		onSelect: function(){
+			$(this).change();
+		},
+	}).on("change", function(){
+		$("#dateDisplay").html("<strong>You Have Selected: </strong>" + $(this).val());
+	});
 
 	// ---------------------------------------------------------
 	// AutoComplete
@@ -195,7 +241,13 @@ $(function(){
 		"Cynthia Storm"
 	];
 	
-	// TO DO: add the autocomplete widget to the page with the settings/features listed above
+	$("#mentor").autocomplete({
+		source: faculty,
+		select: (event, ui) => {
+			$("#mentor").val(ui.item.value);
+			$("#auto-output").html("<strong> You have chosen: </strong>" + $("#mentor").val());
+		}
+	});
 
 	// ---------------------------------------------------------
 	// Dialog Widget (Modal/Popup)
@@ -215,7 +267,20 @@ $(function(){
 				- duration should be 2000
 			- When a user clicks on the button in this section, it should open the dialog
 	*/
-	// TO DO: add the dialog to the page with the settings/features listed above
+	$("#dialog").dialog({
+		autoOpen: false,
+		show: {
+			effect: "blind",
+			duration: 2000
+		},
+		hide: {
+			effect: "fade",
+			duration: 2000
+		}
+	});
+	$("#openDialog").on("click", function(){
+		$("#dialog").dialog("open");
+	});
 
 	// ---------------------------------------------------------
 	// Tooltip Widget
@@ -230,5 +295,5 @@ $(function(){
 		--- FOR OUR VERSION: ---
 			- Default tooltip
 	*/
-	// TO DO: add tooltips to the page with the settings/features listed above
+	$(document).tooltip();
 });
